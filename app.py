@@ -17,14 +17,14 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Email settings
-app.config['MAIL_SERVER'] = 'smtp.gmail.com'
-app.config['MAIL_PORT'] = 587
-app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USE_SSL'] = False
-app.config['MAIL_USERNAME'] = 'abhishekchitrio@gmail.com'
-app.config['MAIL_PASSWORD'] = 'siye qios xtlz xuxr'
-app.config['MAIL_DEFAULT_SENDER'] = 'abhishekchitrio@gmail.com'
-app.config['MAIL_DEBUG'] = True
+app.config['MAIL_SERVER'] = os.getenv('MAIL_SERVER', 'smtp.gmail.com')
+app.config['MAIL_PORT'] = int(os.getenv('MAIL_PORT', 587))
+app.config['MAIL_USE_TLS'] = os.getenv('MAIL_USE_TLS', 'True') == 'True'
+app.config['MAIL_USE_SSL'] = os.getenv('MAIL_USE_SSL', 'False') == 'True'
+app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME', 'abhishekchitrio@gmail.com')
+app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD', 'siye qios xtlz xuxr')
+app.config['MAIL_DEFAULT_SENDER'] = os.getenv('MAIL_USERNAME', 'abhishekchitrio@gmail.com')
+app.config['MAIL_DEBUG'] = os.getenv('MAIL_DEBUG', 'True') == 'True'
 
 db = SQLAlchemy(app)
 mail = Mail()
@@ -56,11 +56,11 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
 def send_otp_email(email, otp):
-    # Retrieve config directly from hardcoded values
-    smtp_server = 'smtp.gmail.com'
-    smtp_port = 587
-    sender_email = 'abhishekchitrio@gmail.com'
-    password = 'siye qios xtlz xuxr'
+    # Retrieve config from environment variables or hardcoded values
+    smtp_server = os.getenv('MAIL_SERVER', 'smtp.gmail.com')
+    smtp_port = int(os.getenv('MAIL_PORT', 587))
+    sender_email = os.getenv('MAIL_USERNAME', 'abhishekchitrio@gmail.com')
+    password = os.getenv('MAIL_PASSWORD', 'siye qios xtlz xuxr')
 
     try:
         print(f"DEBUG: Direct SMTP Attempt to {email} via {smtp_server}:{smtp_port}")
